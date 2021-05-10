@@ -1,0 +1,46 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+
+lint:
+  name: yamllint
+
+platforms:
+  - name: docker-ubuntu-18.04
+    box: generic/ubuntu1804
+  - name: docker-ubuntu-20.04
+    box: generic/ubuntu2004
+
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../playbook.yml
+    prepare: ../prepare.yml
+  lint:
+    name: ansible-lint
+
+scenario:
+  name: libvirt
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - destroy
+
+verifier:
+  name: testinfra
+  directory: ../tests/
+  lint:
+    name: flake8

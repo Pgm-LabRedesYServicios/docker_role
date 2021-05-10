@@ -1,0 +1,23 @@
+---
+- name: '[Pretask] Install pip'
+  hosts: all
+  become: true
+  tasks:
+    - name: Install pip
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3-pip
+        - python3-setuptools
+    - name: Correct pip alternative
+      alternatives:
+        name: pip
+        path: /usr/bin/pip3
+        link: /usr/bin/pip
+        priority: 1
+
+- name: Converge
+  hosts: all
+  roles:
+    - role: docker

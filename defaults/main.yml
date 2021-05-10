@@ -1,0 +1,2 @@
+install_docker_pip: True
+docker_architecture: amd64

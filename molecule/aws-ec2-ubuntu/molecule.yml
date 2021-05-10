@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: ec2
+  internal_cidr: 172.30.0.0/24
+  ssh_key_path: /root/.ssh/icij_ci
+
+lint:
+  name: yamllint
+platforms:
+  - name: molecule-testing-docker-role-ubuntu
+    image: ami-04b9e92b5572fa0d1
+    instance_type: t2.micro
+    vpc_subnet_id: subnet-3f90d748
+  - name: molecule-testing-docker-role-ubuntu-18.04
+    image: ami-00ddb0e5626798373
+    instance_type: t2.nano
+    vpc_subnet_id: subnet-3f90d748
+  - name: molecule-testing-docker-role-ubuntu-20.04
+    image: ami-0885b1f6bd170450c
+    instance_type: t2.nano
+    vpc_subnet_id: subnet-3f90d748
+
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../playbook.yml
+    prepare: ../prepare.yml
+  lint:
+    name: ansible-lint
+
+verifier:
+  name: testinfra
+  directory: ../tests/
+  lint:
+    name: flake8
